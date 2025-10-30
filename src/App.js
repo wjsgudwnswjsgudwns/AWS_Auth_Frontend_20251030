@@ -7,13 +7,12 @@ function App() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
+  const [token, setToken] = useState("" || localStorage.getItem("token"));
+
   //회원 가입
   const signup = async (e) => {
     try {
-      await api.post(
-        "/api/auth/signup",
-        new URLSearchParams({ username, password })
-      );
+      await api.post("/api/auth/signup", { username, password });
       setMessage(username + " 회원 가입 성공");
     } catch (err) {
       console.error(err);
@@ -24,10 +23,9 @@ function App() {
   //로그인
   const login = async (e) => {
     try {
-      await api.post(
-        "/api/auth/login",
-        new URLSearchParams({ username, password })
-      );
+      const res = await api.post("/api/auth/login", { username, password });
+      setToken(res.data.token); // 로그인 성공 후 받은 토큰 값 저장
+      localStorage.getItem("token", res.data.token);
       setMessage(username + " 로그인 성공");
     } catch (err) {
       console.error(err);
@@ -36,23 +34,27 @@ function App() {
   };
 
   //로그아웃
-  const logout = async () => {
-    try {
-      await api.post("/api/auth/logout");
-      setMessage(username + " 로그아웃 성공");
-    } catch (err) {
-      console.error(err);
-      alert("로그아웃 실패");
-    }
+  const logout = () => {
+    localStorage.removeItem("token"); // 토큰 삭제
+    setToken(""); // 토큰 초기화
+    setMessage(username + " 로그아웃");
   };
 
   //사용자 확인
   const userCheck = async () => {
     try {
-      const res = await api.get("/api/auth/me");
+      if (!token) {
+        alert("로그인 후 사용 가능합니다.");
+        return;
+      }
+
+      const res = await api.get("/api/auth/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setMessage("현재 로그인 중인 아이디 : " + res.data.username);
     } catch (err) {
       console.error(err);
+      alert("사용자 정보를 가져 올 수 없습니다");
     }
   };
 
