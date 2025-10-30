@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import api from "./axiosConfig";
 
@@ -8,6 +8,13 @@ function App() {
   const [message, setMessage] = useState("");
 
   const [token, setToken] = useState("" || localStorage.getItem("token"));
+  //localStorage -> 웹 브라우저에서 가지고 있는 저장소
+
+  useEffect(() => {
+    if (token) {
+      userCheck();
+    }
+  }, []);
 
   //회원 가입
   const signup = async (e) => {
@@ -52,6 +59,7 @@ function App() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMessage("현재 로그인 중인 아이디 : " + res.data.username);
+      setUsername(res.data.username);
     } catch (err) {
       console.error(err);
       alert("사용자 정보를 가져 올 수 없습니다");
