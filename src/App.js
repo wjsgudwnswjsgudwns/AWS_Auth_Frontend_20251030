@@ -32,7 +32,7 @@ function App() {
     try {
       const res = await api.post("/api/auth/login", { username, password });
       setToken(res.data.token); // 로그인 성공 후 받은 토큰 값 저장
-      localStorage.getItem("token", res.data.token);
+      localStorage.setItem("token", res.data.token);
       setMessage(username + " 로그인 성공");
     } catch (err) {
       console.error(err);
