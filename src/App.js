@@ -42,10 +42,10 @@ function App() {
 
   //로그아웃
   const logout = () => {
-    userCheck();
     localStorage.removeItem("token"); // 토큰 삭제
     setToken(""); // 토큰 초기화
     setUsername("");
+    setPassword(""); //비밀번호 초기화
     setMessage(username + " 로그아웃");
   };
 
