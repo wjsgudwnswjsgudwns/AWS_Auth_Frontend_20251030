@@ -45,6 +45,7 @@ function App() {
     userCheck();
     localStorage.removeItem("token"); // 토큰 삭제
     setToken(""); // 토큰 초기화
+    setUsername("");
     setMessage(username + " 로그아웃");
   };
 
